@@ -1,95 +1,55 @@
 import Image from "next/image";
-import styles from "./page.module.css";
+import { Button } from "@/components/ui/button";
+import { stripe } from "@/lib/stripe";
+import Link from "next/link";
+import { Carousel } from "@/components/Carousel";
 
-export default function Home() {
+export default async function Home() {
+  const products = await stripe.products.list({
+    expand: ["data.default_price"],
+    limit: 5,
+  });
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+    <div>
+      <section className="rounded bg-[#e6e3e1] py-8 sm:py-12 font-optima">
+        <div className="mx-auto grid grid-cols-1 items-center justify-items-center gap-8 px-8 sm:px-16 md:grid-cols-2">
+          <div className="max-w-md space-y-4">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              Unique Present Emporium
+            </h2>
+            <p className="text-neutral-600">
+              {" "}
+              Discover unique and thoughtful gifts for every occasion at our
+              one-stop-shop. A treasure trove of carefully curated gifts to suit
+              all tastes and budgets.
+            </p>
+            <Button
+              asChild
+              variant="default"
+              className="inline-flex items-center justify-center rounded-full px-6 py-3 bg-[#77b7ff] hover:bg-[#65a0e4] text-white"
+            >
+              <Link
+                href="/products"
+                className="inline-flex items-center justify-center rounded-full px-6 py-3"
+              >
+                Browse Gifts
+              </Link>
+            </Button>
+          </div>
+          <Image
+            alt="Banner Image"
+            width={450}
+            height={450}
+            src={products.data[0].images[0]}
+            priority={true}
+            className="rounded"
+          />
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+      <section className="py-8">
+        <Carousel products={products.data} />
+      </section>
     </div>
   );
 }
